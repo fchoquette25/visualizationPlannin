@@ -1,0 +1,30 @@
+let data = [];
+
+function preload() {
+    loadJSON("https://api.npoint.io/93bed93a99df4c91044e", (loadedData) => {
+        data = loadedData;
+    });
+}
+
+function setup() {
+    createCanvas(600, 400);
+}
+
+function draw() {
+    background(220);
+    textSize(16);
+    fill(0);
+    text("Departing Flights from NYC Airports", 150, 30);
+
+    for (let i = 0; i < data.length; i++) {
+        let x = map(i, 0, data.length, 50, width - 50);
+        let y = map(data[i].flights, 0, 2000, height - 50, 50);
+        
+        fill(100, 100, 250);
+        ellipse(x, y, 10, 10);
+        
+        fill(0);
+        text(data[i].month, x - 10, height - 30);
+        text(data[i].flights, x - 10, y - 10);
+    }
+}
