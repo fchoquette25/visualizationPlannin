@@ -1,30 +1,44 @@
-let data = [];
-
-function preload() {
-    loadJSON("https://api.npoint.io/93bed93a99df4c91044e", (loadedData) => {
-        data = loadedData;
-    });
-}
+let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+let departures = [48180, 47530, 52016, 52549, 54944, 53634, 55127, 53569, 53928, 55104, 50954, 52064];
 
 function setup() {
-    createCanvas(600, 400);
+  createCanvas(800, 600);
+  background(255);
+  drawLineChart();
 }
 
-function draw() {
-    background(220);
-    textSize(16);
-    fill(0);
-    text("Departing Flights from NYC Airports", 150, 30);
+function drawLineChart() {
+  let margin = 50;
+  let chartWidth = width - 2 * margin;
+  let chartHeight = height - 2 * margin;
 
-    for (let i = 0; i < data.length; i++) {
-        let x = map(i, 0, data.length, 50, width - 50);
-        let y = map(data[i].flights, 0, 2000, height - 50, 50);
-        
-        fill(100, 100, 250);
-        ellipse(x, y, 10, 10);
-        
-        fill(0);
-        text(data[i].month, x - 10, height - 30);
-        text(data[i].flights, x - 10, y - 10);
-    }
+  // Draw axes
+  stroke(0);
+  line(margin, margin, margin, height - margin); // Y-axis
+  line(margin, height - margin, width - margin, height - margin); // X-axis
+
+  // Plot data
+  noFill();
+  stroke(0, 0, 255);
+  strokeWeight(2);
+  beginShape();
+  for (let i = 0; i < departures.length; i++) {
+    let x = map(i, 0, departures.length - 1, margin, width - margin);
+    let y = map(departures[i], min(departures), max(departures), height - margin, margin);
+    vertex(x, y);
+    
+    // Draw data points
+    fill(0);
+    ellipse(x, y, 6, 6);
+    noFill();
+  }
+  endShape();
+
+  // Add labels
+  fill(0);
+  textAlign(CENTER, CENTER);
+  for (let i = 0; i < months.length; i++) {
+    let x = map(i, 0, months.length - 1, margin, width - margin);
+    text(months[i], x, height - margin / 2);
+  }
 }
