@@ -1,33 +1,33 @@
 class LineChart {
-  constructor(data, labels) {
-    this.data = data;
-    this.labels = labels;
+  constructor() {
+    this.data = [];
+    this.labels = [];
     this.margin = 50;
   }
 
+  addData(label, value) {
+    this.labels.push(label);
+    this.data.push(value);
+  }
+
   draw() {
-    let w = width - 2 * this.margin;
-    let h = height - 2 * this.margin;
+    if (!this.data.length) return;
+    let minY = min(this.data), maxY = max(this.data);
     stroke(0);
     line(this.margin, this.margin, this.margin, height - this.margin);
     line(this.margin, height - this.margin, width - this.margin, height - this.margin);
-    
     noFill();
     stroke(0, 0, 255);
-    strokeWeight(2);
     beginShape();
     for (let i = 0; i < this.data.length; i++) {
       let x = map(i, 0, this.data.length - 1, this.margin, width - this.margin);
-      let y = map(this.data[i], min(this.data), max(this.data), height - this.margin, this.margin);
+      let y = map(this.data[i], minY, maxY, height - this.margin, this.margin);
       vertex(x, y);
-      fill(0);
       ellipse(x, y, 6, 6);
-      noFill();
     }
     endShape();
-    
     fill(0);
-    textAlign(CENTER, CENTER);
+    textAlign(CENTER);
     for (let i = 0; i < this.labels.length; i++) {
       let x = map(i, 0, this.labels.length - 1, this.margin, width - this.margin);
       text(this.labels[i], x, height - this.margin / 2);
@@ -35,13 +35,14 @@ class LineChart {
   }
 }
 
-let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-let departures = [48180, 47530, 52016, 52549, 54944, 53634, 55127, 53569, 53928, 55104, 50954, 52064];
 let chart;
 
 function setup() {
   createCanvas(800, 600);
-  chart = new LineChart(departures, months);
+  chart = new LineChart();
+  let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  let departures = [48180, 47530, 52016, 52549, 54944, 53634, 55127, 53569, 53928, 55104, 50954, 52064];
+  months.forEach((m, i) => chart.addData(m, departures[i]));
   background(255);
   chart.draw();
 }
